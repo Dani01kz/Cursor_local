@@ -14,149 +14,247 @@ RESEARCH_TOPIC = (
     "networks and instant messengers using machine learning"
 )
 
+# These placeholders keep the layout official-looking while avoiding incorrect facts.
+UNIVERSITY_LINE_1 = "MINISTRY OF SCIENCE AND HIGHER EDUCATION OF THE REPUBLIC OF KAZAKHSTAN"
+UNIVERSITY_LINE_2 = "[UNIVERSITY NAME]"
+UNIVERSITY_LINE_3 = "[FACULTY / DEPARTMENT]"
+CITY = "[CITY]"
 
-class StyledAssignmentPDF(FPDF):
+
+class FormalAssignmentPDF(FPDF):
     def header(self):
         if self.page_no() == 1:
             return
-        self.set_font("Helvetica", "I", 9)
-        self.set_text_color(100, 100, 115)
+        self.set_y(9)
+        self.set_font("Times", "I", 10)
+        self.set_text_color(70, 70, 70)
         self.cell(
             0,
-            6,
-            f"{PRACTICAL_TITLE} | {NAME} | Group {GROUP}",
+            5,
+            f"{PRACTICAL_TITLE} - {NAME}, group {GROUP}",
             align="R",
             new_x=XPos.LMARGIN,
             new_y=YPos.NEXT,
         )
-        self.set_draw_color(210, 220, 235)
+        self.set_draw_color(150, 150, 150)
         self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
         self.ln(3)
 
     def footer(self):
-        self.set_y(-12)
-        self.set_draw_color(210, 220, 235)
-        self.line(self.l_margin, self.get_y() - 1, self.w - self.r_margin, self.get_y() - 1)
-        self.set_font("Helvetica", "I", 9)
-        self.set_text_color(110, 110, 110)
-        self.cell(0, 6, f"Page {self.page_no()}", align="C")
+        self.set_y(-14)
+        self.set_draw_color(160, 160, 160)
+        self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
+        self.ln(2)
+        self.set_font("Times", "I", 10)
+        self.set_text_color(80, 80, 80)
+        self.cell(0, 6, f"- {self.page_no()} -", align="C")
 
 
-def add_title_page(pdf: StyledAssignmentPDF):
+def add_formal_cover_page(pdf: FormalAssignmentPDF):
     pdf.add_page()
 
-    # Top banner
-    banner_x = pdf.l_margin
-    banner_y = 22
-    banner_w = pdf.w - pdf.l_margin - pdf.r_margin
-    banner_h = 36
-    pdf.set_fill_color(35, 74, 125)
-    pdf.rect(banner_x, banner_y, banner_w, banner_h, style="F")
+    page_w = pdf.w - pdf.l_margin - pdf.r_margin
 
-    pdf.set_xy(banner_x, banner_y + 7)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("Helvetica", "B", 20)
-    pdf.cell(0, 8, PRACTICAL_TITLE, align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(0, 7, PRACTICAL_TOPIC, align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    # Double border for a formal document style.
+    pdf.set_draw_color(80, 80, 80)
+    pdf.rect(12, 12, pdf.w - 24, pdf.h - 24)
+    pdf.rect(14, 14, pdf.w - 28, pdf.h - 28)
 
-    # Student card
-    card_x = pdf.l_margin
-    card_y = 72
-    card_w = pdf.w - pdf.l_margin - pdf.r_margin
-    card_h = 42
-    pdf.set_fill_color(245, 248, 253)
-    pdf.set_draw_color(198, 210, 230)
-    pdf.rect(card_x, card_y, card_w, card_h, style="DF")
+    pdf.set_y(28)
+    pdf.set_text_color(20, 20, 20)
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(
+        0,
+        6,
+        UNIVERSITY_LINE_1,
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_font("Times", "B", 12)
+    pdf.multi_cell(
+        0,
+        6,
+        UNIVERSITY_LINE_2,
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(
+        0,
+        6,
+        UNIVERSITY_LINE_3,
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
-    pdf.set_text_color(35, 35, 35)
-    pdf.set_xy(card_x + 8, card_y + 8)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(24, 8, "Student:")
-    pdf.set_font("Helvetica", "", 12)
-    pdf.cell(0, 8, NAME, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(28)
+    pdf.set_font("Times", "B", 16)
+    pdf.multi_cell(
+        0,
+        8,
+        PRACTICAL_TITLE,
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_font("Times", "B", 13)
+    pdf.multi_cell(
+        0,
+        7,
+        f"Topic: {PRACTICAL_TOPIC}",
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
-    pdf.set_x(card_x + 8)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(24, 8, "Group:")
-    pdf.set_font("Helvetica", "", 12)
-    pdf.cell(0, 8, GROUP, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(20)
+    pdf.set_font("Times", "", 13)
+    pdf.multi_cell(
+        0,
+        7,
+        "Research topic:",
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_font("Times", "I", 13)
+    pdf.multi_cell(
+        0,
+        7,
+        RESEARCH_TOPIC,
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
-    pdf.set_x(card_x + 8)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(24, 8, "Date:")
-    pdf.set_font("Helvetica", "", 12)
-    pdf.cell(0, 8, date.today().strftime("%B %d, %Y"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    # Signature block on right side.
+    pdf.set_y(195)
+    block_x = pdf.l_margin + page_w * 0.52
+    block_w = page_w * 0.42
+    pdf.set_x(block_x)
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(
+        block_w,
+        7,
+        "Completed by: __________________",
+        align="L",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_x(block_x)
+    pdf.set_font("Times", "B", 12)
+    pdf.cell(block_w, 7, f"{NAME}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    # Research topic
-    pdf.ln(18)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.set_text_color(27, 56, 100)
-    pdf.cell(0, 8, "Research topic", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_text_color(40, 40, 40)
-    pdf.set_font("Helvetica", "", 12)
-    pdf.multi_cell(0, 7, RESEARCH_TOPIC)
+    pdf.set_x(block_x)
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(
+        block_w,
+        7,
+        "Group: _________________________",
+        align="L",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_x(block_x)
+    pdf.set_font("Times", "B", 12)
+    pdf.cell(block_w, 7, GROUP, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    pdf.set_x(block_x)
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(
+        block_w,
+        7,
+        "Checked by: ____________________",
+        align="L",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+
+    # Bottom line.
+    pdf.set_y(-35)
+    pdf.set_font("Times", "", 12)
+    pdf.cell(
+        0,
+        8,
+        f"{CITY} - {date.today().year}",
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
+    pdf.set_font("Times", "I", 10)
+    pdf.set_text_color(90, 90, 90)
+    pdf.multi_cell(
+        0,
+        5,
+        "Note: Replace [UNIVERSITY NAME], [FACULTY / DEPARTMENT], and [CITY] with your official details.",
+        align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
 
-def h1(pdf: StyledAssignmentPDF, text: str):
+def section_title(pdf: FormalAssignmentPDF, text: str):
     pdf.ln(1)
-    pdf.set_font("Helvetica", "B", 14)
-    pdf.set_text_color(27, 56, 100)
-    pdf.multi_cell(0, 8, text)
-    pdf.set_draw_color(205, 218, 238)
-    y = pdf.get_y()
-    pdf.line(pdf.l_margin, y, pdf.w - pdf.r_margin, y)
-    pdf.ln(2)
-    pdf.set_text_color(40, 40, 40)
+    pdf.set_fill_color(236, 236, 236)
+    pdf.set_draw_color(170, 170, 170)
+    pdf.set_font("Times", "B", 13)
+    pdf.set_text_color(15, 15, 15)
+    pdf.multi_cell(0, 8, text, border=1, fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(1.5)
+    pdf.set_text_color(20, 20, 20)
 
 
-def h2(pdf: StyledAssignmentPDF, text: str):
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.set_text_color(40, 73, 122)
-    pdf.multi_cell(0, 7, text)
-    pdf.set_text_color(40, 40, 40)
+def subsection_title(pdf: FormalAssignmentPDF, text: str):
+    pdf.set_font("Times", "B", 12)
+    pdf.set_text_color(30, 30, 30)
+    pdf.multi_cell(0, 7, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.set_text_color(20, 20, 20)
 
 
-def paragraph(pdf: StyledAssignmentPDF, text: str):
-    pdf.set_font("Helvetica", "", 11)
-    pdf.multi_cell(0, 6, text)
-    pdf.ln(1)
+def paragraph(pdf: FormalAssignmentPDF, text: str):
+    pdf.set_font("Times", "", 12)
+    pdf.multi_cell(0, 6.2, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(0.8)
 
 
-def bullets(pdf: StyledAssignmentPDF, items: list[str], indent: int = 5):
-    pdf.set_font("Helvetica", "", 11)
+def bullets(pdf: FormalAssignmentPDF, items: list[str], indent: int = 5):
+    pdf.set_font("Times", "", 12)
     for item in items:
         pdf.set_x(pdf.l_margin + indent)
-        pdf.cell(4, 6, "-", new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.multi_cell(0, 6, item)
-    pdf.ln(1)
+        pdf.cell(4, 6.2, "-", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.multi_cell(0, 6.2, item, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(0.8)
 
 
-def numbered(pdf: StyledAssignmentPDF, items: list[str], indent: int = 5):
+def numbered(pdf: FormalAssignmentPDF, items: list[str], indent: int = 5):
+    pdf.set_font("Times", "", 12)
     for idx, item in enumerate(items, start=1):
         label = f"{idx}) "
         pdf.set_x(pdf.l_margin + indent)
-        pdf.set_font("Helvetica", "B", 11)
-        pdf.cell(pdf.get_string_width(label) + 1, 6, label, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.set_font("Helvetica", "", 11)
-        pdf.multi_cell(0, 6, item)
-    pdf.ln(1)
+        pdf.set_font("Times", "B", 12)
+        pdf.cell(pdf.get_string_width(label) + 1, 6.2, label, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Times", "", 12)
+        pdf.multi_cell(0, 6.2, item, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(0.8)
 
 
-def outline(pdf: StyledAssignmentPDF, rows: list[tuple[int, str]]):
+def outline(pdf: FormalAssignmentPDF, rows: list[tuple[int, str]]):
     for level, text in rows:
         pdf.set_x(pdf.l_margin + level * 6)
         if level == 0:
-            pdf.set_font("Helvetica", "B", 11)
+            pdf.set_font("Times", "B", 12)
         elif level == 1:
-            pdf.set_font("Helvetica", "", 11)
+            pdf.set_font("Times", "", 12)
         else:
-            pdf.set_font("Helvetica", "", 10)
-        pdf.multi_cell(0, 6, text)
-    pdf.ln(1)
+            pdf.set_font("Times", "I", 11)
+        pdf.multi_cell(0, 6, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(0.8)
 
 
-def objective_table(pdf: StyledAssignmentPDF):
+def objective_table(pdf: FormalAssignmentPDF):
     headers = ["Research objective", "Thesis section", "Methods", "Expected results"]
     rows = [
         [
@@ -197,69 +295,68 @@ def objective_table(pdf: StyledAssignmentPDF):
         ],
     ]
 
-    pdf.set_font("Helvetica", "", 10)
+    pdf.set_font("Times", "", 10.5)
     with pdf.table(
         width=pdf.w - pdf.l_margin - pdf.r_margin,
-        col_widths=(42, 28, 50, 60),
-        line_height=5.4,
+        col_widths=(43, 28, 49, 60),
+        line_height=5.2,
         text_align=("LEFT", "CENTER", "LEFT", "LEFT"),
-        padding=1.3,
+        padding=1.2,
         headings_style=FontFace(
             emphasis="BOLD",
-            fill_color=(226, 236, 252),
-            color=(20, 46, 88),
+            fill_color=(230, 230, 230),
+            color=(20, 20, 20),
         ),
     ) as table:
         row = table.row()
         for cell in headers:
             row.cell(cell)
-        for r in rows:
+        for values in rows:
             row = table.row()
-            for cell in r:
+            for cell in values:
                 row.cell(cell)
+    pdf.ln(1.5)
 
-    pdf.ln(2)
 
+def logic_model_box(pdf: FormalAssignmentPDF):
+    x = pdf.l_margin
+    y = pdf.get_y()
+    w = pdf.w - pdf.l_margin - pdf.r_margin
+    h = 30
 
-def logic_model_box(pdf: StyledAssignmentPDF):
-    box_x = pdf.l_margin
-    box_y = pdf.get_y()
-    box_w = pdf.w - pdf.l_margin - pdf.r_margin
-    box_h = 28
+    pdf.set_fill_color(247, 247, 247)
+    pdf.set_draw_color(150, 150, 150)
+    pdf.rect(x, y, w, h, style="DF")
 
-    pdf.set_fill_color(245, 248, 253)
-    pdf.set_draw_color(198, 210, 230)
-    pdf.rect(box_x, box_y, box_w, box_h, style="DF")
-
-    pdf.set_xy(box_x + 4, box_y + 5)
-    pdf.set_font("Helvetica", "B", 11)
-    pdf.set_text_color(34, 65, 109)
+    pdf.set_xy(x + 4, y + 5)
+    pdf.set_font("Times", "B", 12)
     pdf.multi_cell(
-        box_w - 8,
+        w - 8,
         6,
         "Scientific problem -> Goal -> Objectives -> Chapters -> Methods -> Results -> Conclusions",
         align="C",
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
     )
-    pdf.set_text_color(40, 40, 40)
-    pdf.ln(3)
+    pdf.ln(2)
 
 
 def build_pdf(output_path: str):
-    pdf = StyledAssignmentPDF(format="A4")
-    pdf.set_margins(left=15, top=15, right=15)
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf = FormalAssignmentPDF(format="A4")
+    pdf.set_margins(left=16, top=16, right=16)
+    pdf.set_auto_page_break(auto=True, margin=16)
 
-    add_title_page(pdf)
+    add_formal_cover_page(pdf)
     pdf.add_page()
 
-    h1(pdf, "1. Purpose of the Practical Work")
+    section_title(pdf, "1. Purpose of the Practical Work")
     paragraph(
         pdf,
         "To develop the ability to design a logically structured thesis in which the scientific problem, "
         "goal, objectives, methods, and results are connected in one coherent research framework.",
     )
 
-    h1(pdf, "2. Requirements for the Thesis Structure")
+    section_title(pdf, "2. Requirements for the Thesis Structure")
     bullets(
         pdf,
         [
@@ -271,7 +368,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "3. Student Assignment")
+    section_title(pdf, "3. Student Assignment")
     numbered(
         pdf,
         [
@@ -283,7 +380,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "4. Complete Table of Contents for the Topic")
+    section_title(pdf, "4. Complete Table of Contents for the Topic")
     outline(
         pdf,
         [
@@ -322,7 +419,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "5. Connection Between Chapters and Research Objectives")
+    section_title(pdf, "5. Connection Between Chapters and Research Objectives")
     paragraph(
         pdf,
         "Research goal: develop and experimentally validate a multiclass machine learning model for "
@@ -340,11 +437,11 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "6. Table Linking Objectives and Structure")
+    section_title(pdf, "6. Table Linking Objectives and Structure")
     objective_table(pdf)
 
-    h1(pdf, "7. Content of Each Section")
-    h2(pdf, "Introduction")
+    section_title(pdf, "7. Content of Each Section")
+    subsection_title(pdf, "Introduction")
     bullets(
         pdf,
         [
@@ -354,7 +451,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h2(pdf, "Chapter 1 (Theoretical)")
+    subsection_title(pdf, "Chapter 1 (Theoretical)")
     bullets(
         pdf,
         [
@@ -364,7 +461,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h2(pdf, "Chapter 2 (Methodology and Development)")
+    subsection_title(pdf, "Chapter 2 (Methodology and Development)")
     bullets(
         pdf,
         [
@@ -374,7 +471,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h2(pdf, "Chapter 3 (Experimental)")
+    subsection_title(pdf, "Chapter 3 (Experimental)")
     bullets(
         pdf,
         [
@@ -384,7 +481,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h2(pdf, "Conclusion")
+    subsection_title(pdf, "Conclusion")
     bullets(
         pdf,
         [
@@ -394,7 +491,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "8. Logical Model of the Thesis Structure")
+    section_title(pdf, "8. Logical Model of the Thesis Structure")
     logic_model_box(pdf)
     paragraph(
         pdf,
@@ -403,7 +500,7 @@ def build_pdf(output_path: str):
         "-> conclusions and practical guidance.",
     )
 
-    h1(pdf, "9. Typical Mistakes and How This Structure Avoids Them")
+    section_title(pdf, "9. Typical Mistakes and How This Structure Avoids Them")
     numbered(
         pdf,
         [
@@ -414,7 +511,7 @@ def build_pdf(output_path: str):
         ],
     )
 
-    h1(pdf, "Final Note")
+    section_title(pdf, "Final Note")
     paragraph(
         pdf,
         "The proposed thesis structure is coherent, objective-driven, and methodologically aligned with the "
