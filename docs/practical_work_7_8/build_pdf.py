@@ -241,7 +241,8 @@ def build_pdf(md_path: Path, out_path: Path) -> None:
     pdf.set_font("Helvetica", "B", 16)
     pdf.ln(12)
     if title_lines:
-        pdf.multi_cell(0, 8, _safe_text(title_lines[0].strip()), align="C")
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(pdf.epw, 8, _safe_text(title_lines[0].strip()), align="C")
         pdf.ln(2)
     pdf.set_font("Helvetica", "", 12)
     for ln in title_lines[1:]:
@@ -249,7 +250,8 @@ def build_pdf(md_path: Path, out_path: Path) -> None:
         if not t:
             pdf.ln(2)
             continue
-        pdf.multi_cell(0, 7, _safe_text(t), align="C")
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(pdf.epw, 7, _safe_text(t), align="C")
 
     pdf.ln(6)
     _render_hr(pdf)
